@@ -1,0 +1,157 @@
+ using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+using System.Net.Mail;
+using System.Net;
+using System.IO;
+
+public partial class mail : System.Web.UI.Page
+{
+    DataTable dt = new DataTable();
+    placement obj = new placement();
+    string academic;
+    string tenth;
+    string twelth;
+    string comp;
+    int academ;
+    int ten;
+    int twel;
+    
+    string result;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session["loginstatus"] != "yes")
+        {
+            Response.Redirect("Home.aspx");
+        }
+        else
+        {
+            academic = Request.QueryString["academic"].ToString();
+            academ = int.Parse(academic);
+            tenth = Request.QueryString["tenth"].ToString();
+            ten = int.Parse(tenth);
+            twelth = Request.QueryString["twelth"].ToString();
+            twel = int.Parse(twelth);
+            
+          
+            fill1();
+           
+        }
+        
+    }
+    public void fill1()
+    {
+        dt = obj.fill("select * from Academic_details obj where obj.verify='Verified' and obj.Academic>='" + academ + "' and obj.Tenth>='" + ten + "' and obj.Twelth>='" + twel + "' ");
+       
+    }
+
+
+    protected void link_home_Click(object sender, EventArgs e)
+    {
+
+        Session["loginstatus"] = "yes";
+        Response.Redirect("Place_officer.aspx");
+
+    }
+    protected void link_stud_Click(object sender, EventArgs e)
+    {
+
+        Session["loginstatus"] = "yes";
+
+        Response.Redirect("shortlist.aspx");
+    }
+    protected void link_off_Click(object sender, EventArgs e)
+    {
+        Session["loginstatus"] = "yes";
+
+        Response.Redirect("company_details.aspx");
+    }
+    protected void link_short_Click(object sender, EventArgs e)
+    {
+        Session["loginstatus"] = "false";
+
+        Response.Redirect("Home.aspx");
+    }
+    protected void sms_Click(object sender, EventArgs e)
+    {
+        sms1.Visible = false;
+        send_sms();
+        
+    }
+    protected void mail1_Click(object sender, EventArgs e)
+    {
+        sent.Visible = false;
+        sendmail();
+        sent.Visible = true;
+    }
+    public void sendmail()
+    {
+        try
+        {
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                string mailid = dt.Rows[i][4].ToString();
+                MailMessage email = new MailMessage();
+                email.To.Add(mailid);
+                MailAddress sendfrom = new MailAddress("placementwebsite2012@gmail.com");
+                email.From = sendfrom;
+                email.Subject = subject.Text;
+                email.Body = cont.Text;
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 25);
+                smtp.EnableSsl = true;
+                smtp.Credentials = new System.Net.NetworkCredential("placementwebsite2012@gmail.com", "placementcollege");
+                smtp.Send(email);
+            }
+       
+        }
+        catch (Exception)
+        {
+            
+         
+        }
+        
+    }
+
+    public void send_sms()
+     {
+         try
+         {
+            
+             for (int i = 0; i < dt.Rows.Count; i++)
+             {
+                 string mobno = dt.Rows[i][3].ToString();
+               
+                 string Address = "http://ubaid.tk/sms/sms.aspx?uid=8012942112&pwd=raju50&msg=" + mgs.Text + "&phone=" + mobno  + "&provider=way2sms";
+                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Address);
+                 WebResponse response = null;
+                 StreamReader reader = null;
+                 response = request.GetResponse();
+                 reader = new StreamReader(response.GetResponseStream());
+                 string result = reader.ReadToEnd();
+                 reader.Close();
+                 
+                 sms1.Visible = true;
+             }
+           
+                
+             
+             
+         }
+         catch (Exception)
+         {
+             
+            
+         }
+
+       
+    }
+}

@@ -1,0 +1,236 @@
+using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+
+public partial class company_details : System.Web.UI.Page
+{
+    placement obj = new placement();
+    DataTable dt = new DataTable();
+    DataTable dt1 = new DataTable();
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session["loginstatus"] != "yes")
+        {
+            Response.Redirect("Home.aspx");
+        }
+        else
+        {
+           
+            
+        }
+
+    }
+    private void SetDefaultView()
+    {
+        MultiView1.ActiveViewIndex = 0;
+    }
+
+    public void fill()
+    {
+        dt = obj.fill("select * from company");
+        Grid.DataSource = dt;
+        Grid.DataBind();
+
+    }
+    public void fill1()
+    {
+        dt = obj.fill("select * from placed_details");
+        Grid1.DataSource = dt;
+        Grid1.DataBind();
+
+    }
+    public void fill2()
+    {
+        dt = obj.fill("select * from attended");
+        GridView1.DataSource = dt;
+        GridView1.DataBind();
+
+    }
+    protected void link_home_Click(object sender, EventArgs e)
+    {
+
+        Session["loginstatus"] = "yes";
+        Response.Redirect("Place_officer.aspx");
+
+    }
+    protected void link_stud_Click(object sender, EventArgs e)
+    {
+
+        Session["loginstatus"] = "yes";
+
+        Response.Redirect("shortlist.aspx");
+    }
+    protected void link_off_Click(object sender, EventArgs e)
+    {
+        Session["loginstatus"] = "yes";
+
+        Response.Redirect("company_details.aspx");
+    }
+    protected void link_short_Click(object sender, EventArgs e)
+    {
+        Session["loginstatus"] = "false";
+
+        Response.Redirect("Home.aspx");
+    }
+    protected void save_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            error.Visible = false;
+            if (name1.Text != "" && date.Text != "" && venue.Text != "" && eligible.Text != "" && arrear.Text != "")
+            {
+                obj.save("insert into company values('" + name1.Text + "','" + date.Text + "','" + venue.Text + "','" + eligible.Text + "','" + arrear.Text + "')");
+                fill();
+            }
+            else
+            {
+                error.Visible = true;
+            }
+        }
+        catch (Exception)
+        {
+
+
+        }
+    }
+    protected void link_company_Click(object sender, EventArgs e)
+    {
+        MultiView1.ActiveViewIndex = 0;
+        fill();
+
+    }
+    protected void link_placed_Click(object sender, EventArgs e)
+    {
+        MultiView1.ActiveViewIndex = 2;
+        fill_placed();
+        fill_regno2();
+        fill1();
+    }
+    public void fill_placed()
+    {
+
+        dt1 = obj.fill("select * from attended");
+        company_name1.DataSource = dt1;
+        company_name1.DataTextField = "comp_name";
+        company_name1.DataValueField = "comp_name";
+        company_name1.DataBind();
+
+
+    }
+    public void fill_regno2()
+    {
+
+        dt1 = obj.fill("select * from attended");
+        Reg.DataSource = dt1;
+        Reg.DataTextField = "Reg_no";
+        Reg.DataValueField = "Reg_no";
+        Reg.DataBind();
+
+
+    }
+    protected void save1_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            error.Visible = false;
+            if (stud_name.Text != "" && Reg.Text != "" && dept.Text != "" && company_name1.Text != "" &&date_drive.Text != "")
+            {
+                obj.save("insert into placed_details values('" + Reg.Text + "','" + stud_name.Text + "','" + dept.Text + "','" + company_name1.Text + "','" + date_drive.Text + "')");
+                fill1();
+            }
+            else
+            {
+                error.Visible = true;
+            }
+        }
+        catch (Exception)
+        {
+
+
+        }
+    }
+    protected void link_attended_Click(object sender, EventArgs e)
+    {
+        MultiView1.ActiveViewIndex = 1;
+        fill_attended();
+        fill_regno1();
+        fill2();
+    }
+    public void fill_attended()
+    {
+
+        dt = obj.fill("select * from company");
+        comp_name1.DataSource = dt;
+        comp_name1.DataTextField = "name1";
+        comp_name1.DataValueField = "name1";
+        comp_name1.DataBind();
+
+
+    }
+    public void fill_regno1()
+    {
+
+        dt1 = obj.fill2("select * from shortlisted");
+        regno1.DataSource = dt1;
+        regno1.DataTextField = "regno";
+        regno1.DataValueField = "regno";
+        regno1.DataBind();
+
+
+    }
+    protected void save2_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            error3.Visible = false;
+            if (stud_name1.Text != "" && regno1.Text != "" && dept1.Text != "" && comp_name1.Text != "" && date1.Text != "")
+            {
+                obj.save("insert into attended values('" + regno1.Text + "','" + stud_name1.Text + "','" + dept1.Text + "','" + comp_name1.Text + "','" + date1.Text + "')");
+                fill2();
+            }
+            else
+            {
+                error.Visible = true;
+            }
+        }
+        catch (Exception)
+        {
+
+
+        }
+    }
+    protected void regno1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        dt = obj.fill("select Stud_name,Dept from shortlisted where Regno='"+regno1.Text +"'");
+        stud_name1.Text=dt.Rows[0][0].ToString();
+        dept1.Text =dt.Rows[0][1].ToString();
+    
+    }
+
+    protected void comp_name1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        dt = obj.fill("select date from Company where name1='" + comp_name1.Text + "'");
+        date1.Text=dt.Rows[0][0].ToString();
+    }
+    protected void Reg_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        dt = obj.fill("select stud_name,dept from attended where Reg_no='" + Reg.Text + "'");
+        stud_name.Text = dt.Rows[0][0].ToString();
+        dept.Text = dt.Rows[0][1].ToString();
+    }
+    protected void company_name1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        dt1 = obj.fill2("select date from attended where comp_name='" + company_name1.Text + "'");
+        date_drive.Text = dt1.Rows[0][0].ToString();
+    }
+  
+}

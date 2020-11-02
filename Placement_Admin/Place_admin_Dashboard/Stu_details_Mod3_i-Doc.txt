@@ -1,0 +1,115 @@
+using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+
+public partial class Place_officer : System.Web.UI.Page
+{
+    placement obj = new placement();
+    DataTable dt = new DataTable();
+    DataTable dt1 = new DataTable();
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session["loginstatus"] != "yes")
+        {
+            Response.Redirect("Home.aspx");
+        }
+        else
+        {
+            fill();
+            academic();
+            
+        }
+    }
+    public void fill()
+    {
+       
+        dt = obj.fill("select username,regno,name,fname,mname,address,gender,mobile,email,verify,'verify' as [verify] from Student_details");
+        Grid.DataSource = dt;
+        Grid.DataBind();
+        ViewState["dt"] = dt;
+    }
+
+   
+    public void academic()
+    {
+        dt1 = obj.fill2("select regno,stud_name,dept,year,tenth,twelth,academic,curricular,verify,'verify' as [verify] from Academic_details");
+        Grid1.DataSource = dt1;
+        Grid1.DataBind();
+        ViewState["dt1"] = dt1;
+    }
+
+    protected void Grid_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        DataTable dt = (DataTable)ViewState["dt"];
+        //int Row_index = (Grid.PageIndex * Grid.PageSize) + int.Parse(e.CommandArgument.ToString()) ;
+        int Row_index = int.Parse(e.CommandArgument.ToString());
+        long Row_ID = long.Parse(dt.Rows[Row_index][1].ToString());
+        
+        if (e.CommandName.ToString() == "verify")
+        {
+            obj.save("update Student_details set verify='Verified' where regno='"+Row_ID+"'");
+            fill();
+        }
+    }
+
+  
+    //protected void Grid_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    //{
+    //    Grid.PageIndex = e.NewPageIndex;
+    //    Grid.DataBind();
+    //}
+
+    protected void link_home_Click(object sender, EventArgs e)
+    {
+
+        Session["loginstatus"] = "yes";
+        Response.Redirect("Place_officer.aspx");
+
+    }
+    protected void link_stud_Click(object sender, EventArgs e)
+    {
+
+        Session["loginstatus"] = "yes";
+
+        Response.Redirect("shortlist.aspx");
+    }
+    protected void link_off_Click(object sender, EventArgs e)
+    {
+        Session["loginstatus"] = "yes";
+
+        Response.Redirect("company_details.aspx");
+    }
+    protected void link_short_Click(object sender, EventArgs e)
+    {
+        Session["loginstatus"] = "false";
+
+        Response.Redirect("Home.aspx");
+    }
+
+    protected void Grid1_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        dt1 = (DataTable)ViewState["dt1"];
+        //int Row_index = (Grid.PageIndex * Grid.PageSize) + int.Parse(e.CommandArgument.ToString()) ;
+        int Row_index = int.Parse(e.CommandArgument.ToString());
+        long Row_ID = long.Parse(dt1.Rows[Row_index][0].ToString());
+
+        if (e.CommandName.ToString() == "verify")
+        {
+            obj.save("update Academic_details set verify='Verified' where regno='" + Row_ID + "'");
+            academic();
+        }
+    }
+    protected void Grid1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
+}

@@ -1,0 +1,102 @@
+using System;
+using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Xml.Linq;
+
+public partial class registeration : System.Web.UI.Page
+{
+    placement obj = new placement();
+    DataTable dt = new DataTable();
+    DataSet ds = new DataSet();
+    string gender;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+    }
+    protected void save_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (rb1.Checked)
+            {
+                gender = "Male";
+            }
+            else if (rb2.Checked)
+            {
+                gender = "Female";
+            }
+            dt = obj.fill("select username from Student_details where username='"+username.Text +"'");
+            ds = obj.fill1("select regno from Student_details where regno='"+regno.Text +"' ");
+            if (dt.Rows.Count == 0 & ds.Tables["a"].Rows.Count == 0)
+            {
+                obj.save("insert into Student_details values('" + username.Text + "','" + password.Text + "','" + regno.Text + "','" + name.Text + "','" + fname.Text + "','" + mname.Text + "','" + addr.Text + "','" + gender + "','" + mob.Text + "','"+email.Text +"','Not Verified')");
+                obj.save("insert into Stud_Login values('"+username.Text +"','"+password.Text +"')");
+                status.Visible = true;
+                status.Text = "Saved";
+                status.ForeColor = System.Drawing.Color.Green;
+            }
+            else
+            {
+                Response.Write("<script>alert('Username or Register no. already Exist.')</script>");
+       
+            }
+        }
+        catch (Exception)
+        {
+
+
+        }
+    }
+    public void fill()
+    {
+
+        dt = obj.fill("select * from Student_details");
+        regno1.DataSource = dt;
+        regno1.DataTextField = "regno";
+        regno1.DataValueField = "regno";
+        regno1.DataBind();
+
+
+    }
+    protected void link_stud_Click(object sender, EventArgs e)
+    {
+        MultiView1.ActiveViewIndex = 0;
+       
+    }
+    protected void link_off_Click(object sender, EventArgs e)
+    {
+        MultiView1.ActiveViewIndex = 1;
+        fill();
+    }
+    protected void regno1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        dt = obj.fill("select name from Student_details where regno='"+regno1.Text +"'");
+        stud_name.Text=dt.Rows[0][0].ToString();
+
+    }
+    
+    protected void save1_Click(object sender, EventArgs e)
+    {
+        try
+        {
+ obj.save("insert into Academic_details values('" + regno1.Text + "','" + stud_name.Text + "','" + dept.Text + "','" + year.Text + "','" + tenth.Text + "','" + twelth.Text + "','" + academ.Text + "','" + extra.Text + "','Not Verified')");
+
+            status1.Visible = true;
+            status1.Text = "Saved";
+            status1.ForeColor = System.Drawing.Color.Green;
+        }
+        catch (Exception )
+        {
+            
+       
+        }
+    }
+}

@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RentalApp", "..\..\repos1\RentalApp\RentalApp.csproj", "{BBEA9360-B659-4AE7-AB1E-2AE1D01FB8BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BBEA9360-B659-4AE7-AB1E-2AE1D01FB8BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBEA9360-B659-4AE7-AB1E-2AE1D01FB8BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBEA9360-B659-4AE7-AB1E-2AE1D01FB8BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBEA9360-B659-4AE7-AB1E-2AE1D01FB8BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE4E4DBD-1F4F-4229-8C50-A3F0C5262E9B}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://dev.azure.com/chaaru1001
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = ..\\..\\repos1\\RentalApp\\RentalApp.csproj
+		SccProjectName1 = RentalApp
+		SccLocalPath1 = ..\\..\\repos1\\RentalApp
+	EndGlobalSection
+EndGlobal
